@@ -1072,6 +1072,159 @@ h3,
   flex: 1;
   min-width: 200px;
 }
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.page-head h1 {
+  margin: 0 !important;
+}
+.stat-hero {
+  grid-column: span 2;
+  background: linear-gradient(135deg, rgba(255, 46, 136, 0.18), rgba(139, 92, 246, 0.18) 50%, rgba(34, 211, 238, 0.14));
+}
+.stat-hero .stat-value {
+  font-size: 3rem;
+}
+@media (max-width: 560px) {
+  .stat-hero {
+    grid-column: auto;
+  }
+}
+.meter {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+  margin: 10px 0 6px;
+}
+.meter span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--grad);
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+@media (max-width: 860px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+.panel {
+  padding: 20px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.panel h2 {
+  font-size: 1rem;
+  margin: 0 0 16px;
+}
+.panel-danger {
+  border-color: rgba(229, 40, 58, 0.4);
+}
+.dist + .dist {
+  margin-top: 14px;
+}
+.dist-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.92rem;
+}
+.feed {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+}
+.feed li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+.feed li .muted {
+  grid-column: 2;
+  font-size: 0.8rem;
+}
+.feed-time {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  color: var(--cyan);
+  grid-row: span 2;
+}
+.feed-name {
+  font-weight: 600;
+}
+.toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.toolbar .input {
+  flex: 1;
+  padding: 10px 14px;
+}
+.tabs {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.tabs a {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.tabs a.active {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+.table td {
+  vertical-align: top;
+}
+.table td .muted,
+.table td .ticket-no {
+  font-size: 0.8rem;
+}
+.actions {
+  display: flex;
+  gap: 6px;
+}
+.pill-err {
+  background: rgba(229, 40, 58, 0.18);
+  color: #ff9aa3;
+}
+.btn-danger {
+  background: rgba(229, 40, 58, 0.16);
+  border: 1px solid rgba(229, 40, 58, 0.5);
+  color: #ffb3ba;
+  box-shadow: none;
+}
+.pager {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+}
 .pin-reveal {
   font-family: var(--font-display), sans-serif;
   font-size: 1.6rem;

@@ -17,7 +17,9 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           </Link>
           <nav className="admin-nav">
             <Link href="/yonetim">Özet</Link>
+            <Link href="/yonetim/katilimcilar">Katılımcılar</Link>
             <Link href="/yonetim/gorevliler">Görevliler</Link>
+            <Link href="/yonetim/ayarlar">Ayarlar</Link>
             <Link href="/kapi">Kapı ekranı</Link>
           </nav>
           <form action={logout}>
