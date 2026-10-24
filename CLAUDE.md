@@ -19,7 +19,9 @@ On this Windows machine Node/Git were installed via winget; if `node`/`npm` are 
 - `npm run db:migrate` — apply migrations to `DATABASE_URL`
 - `npx tsx scripts/gen-keys.ts "<admin password>"` — prints the secret env vars (ticket signing key pair, session secret, admin password hash). Don't use `npm run gen-keys -- ...` from PowerShell; it swallows `--`.
 
-Env vars are documented in `.env.example` (local copy goes in `.env.local`, not committed).
+Env vars are documented in `.env.example` (local copy goes in `.env.local`, not committed; the existing `.env.local` holds dev-only keys, admin password `gelistirme-sifresi`).
+
+**Local DB**: when `DATABASE_URL` is empty (and not in production), `getDb()` uses embedded PGlite stored in `.pglite/` and runs migrations from `drizzle/` automatically. Tests call `createLocalDb()` for a fresh in-memory DB per test. Only one process can open `.pglite/` at a time, so don't run scripts against it while `npm run dev` is up. Also don't run `next build` while the dev server is running; both write to `.next/`.
 
 ## Architecture
 
