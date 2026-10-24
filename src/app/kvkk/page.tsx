@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { EVENT } from "@/lib/event";
 
 export const metadata: Metadata = { title: `KVKK Aydınlatma Metni · ${EVENT.name}` };
@@ -6,7 +7,12 @@ export const metadata: Metadata = { title: `KVKK Aydınlatma Metni · ${EVENT.na
 // Taslak metindir; yayından önce organizatör kurumun hukuk birimince gözden geçirilmelidir.
 export default function KvkkPage() {
   return (
-    <main className="prose">
+    <main className="container narrow prose">
+      <nav className="topbar">
+        <Link href="/" className="brand">
+          Alucra <span>GençFest</span>
+        </Link>
+      </nav>
       <h1>KVKK Aydınlatma Metni</h1>
       <p>
         6698 sayılı Kişisel Verilerin Korunması Kanunu (&quot;KVKK&quot;) uyarınca, {EVENT.name} etkinliği kapsamında

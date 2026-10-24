@@ -23,6 +23,12 @@ function message(ticketId: string): Uint8Array {
   return new TextEncoder().encode(`${PREFIX}.${ticketId}`);
 }
 
+/** Bilette ve panelde gösterilen kısa kod (ör. "K7QF-2XAB"). Yalnızca görsel; doğrulama için kullanılmaz. */
+export function ticketCode(ticketId: string): string {
+  const s = ticketId.slice(0, 8).toUpperCase().replace(/[-_]/g, "X");
+  return `${s.slice(0, 4)}-${s.slice(4)}`;
+}
+
 export function newTicketId(): string {
   return toBase64Url(crypto.getRandomValues(new Uint8Array(16)));
 }

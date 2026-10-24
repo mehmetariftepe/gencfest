@@ -14,6 +14,7 @@ On this Windows machine Node/Git were installed via winget; if `node`/`npm` are 
 `$env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User')`
 
 - `npm run dev` / `npm run build` / `npm run typecheck` / `npm run lint`
+- `npm run dev:https` — dev server on the LAN with a self-signed cert, so a phone's camera can open `/kapi` (camera APIs require HTTPS; localhost is exempt)
 - `npm test` — all Vitest tests; single file: `npx vitest run tests/token.test.ts`; single test: `npx vitest run -t "sahte"`
 - `npm run db:generate` — create a migration in `drizzle/` after editing `src/lib/db/schema.ts`
 - `npm run db:migrate` — apply migrations to `DATABASE_URL`
@@ -33,5 +34,8 @@ Env vars are documented in `.env.example` (local copy goes in `.env.local`, not 
 - **Auth**: no auth provider. Admin password hash comes from env (`ADMIN_PASSWORD_BCRYPT_B64`, base64url-wrapped so `$` survives dotenv expansion). Gate staff are rows in `staff` (name + bcrypt PIN). Sessions are `jose`-signed httpOnly cookies with role `admin` or `staff`; `/yonetim` requires admin, `/kapi` requires staff or admin.
 - **Offline gate mode**: the gate page caches the public key and the cancelled-ticket list, verifies signatures locally, records used IDs in localStorage, queues check-ins and syncs to `/api/checkin/sync`. Conflicts go to `checkin_conflicts`.
 - **KVKK (minimum data)**: collect only full name, email, phone and age group, plus consent timestamps. Under-18 registrations require the `guardian_consent` checkbox. Don't store IPs or add fields without a reason.
+
+- **Design**: dark "night concert" theme. All colors and tokens live at the top of `src/app/globals.css`. Fonts are Unbounded (display) and Inter (body) via `next/font`, exposed as `--font-display` / `--font-body`. The downloadable PNG ticket (`DownloadTicketButton.tsx`) redraws the on-page ticket on a canvas, so keep the two in sync. QR codes must stay black on white for scanners.
+- **Gate UI** (`GateScanner.tsx`): `qr-scanner` is imported dynamically on the "Okutmaya başla" tap, which also unlocks Web Audio (`lib/sounds.ts`). Result screens are full-screen colored overlays (ok, err, warn) with a cooldown so the same QR isn't re-scanned while it stays in frame.
 
 Routes (Turkish paths): `/` registration, `/kvkk`, `/bilet/[token]` ticket, `/kapi` gate scanner, `/kapi/giris` staff login, `/yonetim/*` admin panel.

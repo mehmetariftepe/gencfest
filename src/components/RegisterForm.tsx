@@ -12,7 +12,7 @@ export function RegisterForm() {
   const [ageGroup, setAgeGroup] = useState(String(v.ageGroup ?? ""));
 
   return (
-    <form action={action} className="card form" noValidate>
+    <form action={action} className="card card-glow form" noValidate>
       {state.error && <p className="alert alert-err">{state.error}</p>}
 
       <label className="field">
@@ -50,7 +50,7 @@ export function RegisterForm() {
       </fieldset>
 
       {ageGroup === "under18" && (
-        <label className="check">
+        <label className="check guardian">
           <input type="checkbox" name="guardianConsent" defaultChecked={v.guardianConsent === true} />
           <span>18 yaşından küçüğüm ve velimin/yasal temsilcimin bilgisi ve onayıyla kayıt oluyorum.</span>
           {fe.guardianConsent && <small className="err">{fe.guardianConsent}</small>}
@@ -74,8 +74,8 @@ export function RegisterForm() {
       {/* Bot tuzağı */}
       <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hp" aria-hidden="true" />
 
-      <button type="submit" className="btn" disabled={pending}>
-        {pending ? "Kaydediliyor…" : "Kayıt ol ve biletimi al"}
+      <button type="submit" className="btn btn-block" disabled={pending}>
+        {pending ? "Biletin hazırlanıyor…" : "Kayıt ol ve biletimi al"}
       </button>
     </form>
   );
