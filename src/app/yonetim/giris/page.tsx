@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { AdminLoginForm } from "@/components/LoginForms";
 
 export const metadata: Metadata = { title: "Yönetici girişi · GençFest", robots: { index: false } };
@@ -16,6 +17,10 @@ export default function AdminLoginPage() {
           Devam etmek için yönetici şifresini girin.
         </p>
         <AdminLoginForm />
+        <div className="auth-links">
+          <Link href="/">← Ana sayfa</Link>
+          <Link href="/kapi/giris">Görevli girişi</Link>
+        </div>
       </div>
     </div>
   );

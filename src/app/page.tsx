@@ -110,7 +110,11 @@ export default async function Home() {
 
         <footer className="container footer">
           <span>© 2026 {EVENT.name}</span>
-          <Link href="/kvkk">KVKK Aydınlatma Metni</Link>
+          <nav className="footer-links">
+            <Link href="/kvkk">KVKK Aydınlatma Metni</Link>
+            <Link href="/kapi/giris">Görevli girişi</Link>
+            <Link href="/yonetim/giris">Yönetim</Link>
+          </nav>
         </footer>
       </main>
     </>

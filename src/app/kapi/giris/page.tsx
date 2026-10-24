@@ -1,5 +1,6 @@
 import { asc, eq } from "drizzle-orm";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { StaffLoginForm } from "@/components/LoginForms";
 import { getDb } from "@/lib/db";
 import { staff } from "@/lib/db/schema";
@@ -30,6 +31,10 @@ export default async function StaffLoginPage() {
         ) : (
           <StaffLoginForm staff={list} />
         )}
+        <div className="auth-links">
+          <Link href="/">← Ana sayfa</Link>
+          <Link href="/yonetim/giris">Yönetici girişi</Link>
+        </div>
       </div>
     </div>
   );
