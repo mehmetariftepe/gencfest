@@ -17,8 +17,10 @@ export type RegisterFormState = {
 const ERROR_TEXT: Record<RegisterError, string> = {
   closed: "Kayıtlar şu anda kapalı.",
   full: "Üzgünüz, kontenjan doldu.",
-  duplicate_email: "Bu e-posta adresiyle zaten kayıt yapılmış.",
-  duplicate_phone: "Bu telefon numarasıyla zaten kayıt yapılmış.",
+  duplicate_email:
+    "Bu e-posta adresiyle zaten kayıt yapılmış. Biletinize ulaşmak için kayıtta kullandığınız telefon numarasını girin.",
+  duplicate_phone:
+    "Bu telefon numarasıyla zaten kayıt yapılmış. Biletinize ulaşmak için kayıtta kullandığınız e-posta adresini girin.",
 };
 
 export async function registerAction(_prev: RegisterFormState, fd: FormData): Promise<RegisterFormState> {
@@ -39,5 +41,5 @@ export async function registerAction(_prev: RegisterFormState, fd: FormData): Pr
   if (!result.ok) return { error: ERROR_TEXT[result.error], values };
 
   const token = await signTicket(result.ticketId, ticketSecretKey());
-  redirect(`/bilet/${token}`);
+  redirect(`/bilet/${token}${result.existing ? "?kayitli=1" : ""}`);
 }

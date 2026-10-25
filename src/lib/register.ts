@@ -5,7 +5,8 @@ import { newTicketId } from "./token";
 import type { RegistrationData } from "./validation";
 
 export type RegisterError = "closed" | "full" | "duplicate_email" | "duplicate_phone";
-export type RegisterResult = { ok: true; ticketId: string } | { ok: false; error: RegisterError };
+/** existing: aynı e-posta + telefonla daha önce alınmış bilet (kişi biletine tekrar ulaşır). */
+export type RegisterResult = { ok: true; ticketId: string; existing?: true } | { ok: false; error: RegisterError };
 
 /** settings satırı migration ile gelmez; yoksa varsayılanlarla oluşturulur. */
 export async function ensureSettings(db: Db) {
@@ -27,14 +28,20 @@ export async function registerTicket(db: Db, data: RegistrationData): Promise<Re
     // settings satırı kilitlenir: eşzamanlı kayıtlar sıraya girer, kontenjan aşılamaz.
     return await db.transaction(async (tx) => {
       const [s] = await tx.select().from(settings).where(eq(settings.id, 1)).for("update");
-      if (!s.registrationOpen) return { ok: false, error: "closed" } as const;
 
-      const [dup] = await tx
-        .select({ email: tickets.email })
+      // Kayıt kapalı ya da kontenjan dolu olsa da kayıtlı kişi biletine ulaşabilsin diye önce bakılır.
+      // Bilet yalnızca e-posta VE telefon aynı kayda aitse gösterilir; tek alanı bilen başkasının biletini alamaz.
+      const dups = await tx
+        .select({ id: tickets.id, email: tickets.email, phone: tickets.phone })
         .from(tickets)
-        .where(or(eq(tickets.email, data.email), eq(tickets.phone, data.phone)))
-        .limit(1);
-      if (dup) return { ok: false, error: dup.email === data.email ? "duplicate_email" : "duplicate_phone" } as const;
+        .where(or(eq(tickets.email, data.email), eq(tickets.phone, data.phone)));
+      const same = dups.find((d) => d.email === data.email && d.phone === data.phone);
+      if (same) return { ok: true, ticketId: same.id, existing: true } as const;
+      if (dups.length) {
+        return { ok: false, error: dups.some((d) => d.email === data.email) ? "duplicate_email" : "duplicate_phone" } as const;
+      }
+
+      if (!s.registrationOpen) return { ok: false, error: "closed" } as const;
 
       if (s.capacity !== null) {
         const [{ n }] = await tx.select({ n: count() }).from(tickets).where(eq(tickets.status, "active"));

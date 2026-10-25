@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Geliştirmede aynı Wi-Fi'deki telefondan açılabilsin (yalnızca `next dev` için geçerli).
+  allowedDevOrigins: ["192.168.*.*", "10.*.*.*"],
   // Yerel geliştirmedeki PGlite (wasm) paketlenmeden Node'dan yüklensin.
   serverExternalPackages: ["@electric-sql/pglite"],
   async headers() {

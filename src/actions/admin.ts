@@ -2,7 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { anonymizeAll } from "@/lib/admin";
+import { deleteAllTickets } from "@/lib/admin";
 import { requireAdmin } from "@/lib/auth";
 import { checkIn } from "@/lib/checkin";
 import { getDb } from "@/lib/db";
@@ -72,7 +72,7 @@ export async function anonymizeData(_prev: SettingsState, fd: FormData): Promise
   if (String(fd.get("confirm") ?? "").trim().toLocaleUpperCase("tr-TR") !== "SİL") {
     return { error: 'Onaylamak için kutuya büyük harflerle "SİL" yazın.' };
   }
-  const n = await anonymizeAll(await getDb());
+  const n = await deleteAllTickets(await getDb());
   done();
-  return { ok: `${n} katılımcının kişisel verisi silindi. İstatistikler korundu.` };
+  return { ok: `${n} katılımcı kaydı silindi. Katılımcı listesi ve özet sıfırlandı.` };
 }

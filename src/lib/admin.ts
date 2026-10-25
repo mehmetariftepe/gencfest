@@ -1,6 +1,6 @@
 import { and, count, desc, eq, ilike, isNotNull, isNull, like, or, sql, type SQL } from "drizzle-orm";
 import type { Db } from "./db";
-import { staff, tickets } from "./db/schema";
+import { checkinConflicts, staff, tickets } from "./db/schema";
 
 export type TicketFilter = "all" | "inside" | "waiting" | "cancelled";
 export const PAGE_SIZE = 50;
@@ -77,20 +77,15 @@ export async function recentCheckins(db: Db, limit = 8) {
 }
 
 /**
- * KVKK: etkinlikten sonra kişisel verileri geri döndürülemez biçimde siler; sayılar (yaş grubu, giriş) korunur.
- * UNIQUE kısıtları bozulmasın diye e-posta/telefon bilet id'si ile benzersiz bir yer tutucuya çevrilir.
+ * KVKK: etkinlikten sonra tüm katılımcı kayıtlarını geri döndürülemez biçimde siler; Özet sayıları da sıfırlanır.
+ * Görevliler ve ayarlar korunur.
  */
-export async function anonymizeAll(db: Db) {
-  const rows = await db
-    .update(tickets)
-    .set({
-      fullName: "Silindi",
-      email: sql`'silindi-' || ${tickets.id}`,
-      phone: sql`'silindi-' || ${tickets.id}`,
-    })
-    .where(sql`${tickets.fullName} <> 'Silindi'`)
-    .returning({ id: tickets.id });
-  return rows.length;
+export async function deleteAllTickets(db: Db) {
+  return db.transaction(async (tx) => {
+    await tx.delete(checkinConflicts);
+    const rows = await tx.delete(tickets).returning({ id: tickets.id });
+    return rows.length;
+  });
 }
 
 /** Excel'in Türkçe ayarlarıyla doğru açılsın diye: UTF-8 BOM + noktalı virgül ayırıcı. */

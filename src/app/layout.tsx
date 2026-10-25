@@ -1,25 +1,43 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Unbounded } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
+import { RevealOnScroll } from "@/components/RevealOnScroll";
 import "./globals.css";
 
-const display = Unbounded({ subsets: ["latin", "latin-ext"], variable: "--font-display", display: "swap" });
-const body = Inter({ subsets: ["latin", "latin-ext"], variable: "--font-body", display: "swap" });
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin", "latin-ext"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-body",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "Alucra GençFest · 31 Ekim 2026",
-  description: "Alucra GençFest — 31 Ekim 2026. Ücretsiz kayıt ol, QR biletini anında al.",
+  title: "ALUCRA GENÇFEST 2026 | Alucra Kalkınma ve Eğitim Vakfı Gençlik Kolları",
+  description: "Alucra GençFest — 31 Ekim 2026, Haliç Event House. Ücretsiz kayıt ol, QR biletini anında al.",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#07040f",
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" className={`${display.variable} ${body.variable}`}>
-      <body>{children}</body>
+    <html lang="tr" className={jakarta.variable}>
+      <body>
+        {/* Sayfanın arkasındaki hafif altın/mavi ışık lekeleri ve noktalı ızgara */}
+        <div className="ambient" aria-hidden="true">
+          <span className="ambient-top" />
+          <span className="ambient-left" />
+          <span className="ambient-right" />
+          <span className="ambient-bottom" />
+          <span className="ambient-grid" />
+        </div>
+        {/* Sayfanın ne kadar kaydırıldığını gösteren ince altın çizgi */}
+        <div className="scroll-progress" aria-hidden="true" />
+        {children}
+        <RevealOnScroll />
+      </body>
     </html>
   );
 }

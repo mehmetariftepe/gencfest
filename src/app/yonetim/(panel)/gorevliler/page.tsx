@@ -1,6 +1,6 @@
 import { asc } from "drizzle-orm";
 import { toggleStaffActive } from "@/actions/staff";
-import { CreateStaffForm, ResetPinButton } from "@/components/StaffForms";
+import { CreateStaffForm, ResetPinButton, SetPinForm } from "@/components/StaffForms";
 import { getDb } from "@/lib/db";
 import { staff } from "@/lib/db/schema";
 
@@ -22,6 +22,7 @@ export default async function StaffPage() {
             <thead>
               <tr>
                 <th>İsim</th>
+                <th>PIN</th>
                 <th>Durum</th>
                 <th>İşlemler</th>
               </tr>
@@ -30,10 +31,12 @@ export default async function StaffPage() {
               {list.map((s) => (
                 <tr key={s.id}>
                   <td>{s.name}</td>
+                  <td>{s.pin ? <span className="pin-cell">{s.pin}</span> : <span className="muted">—</span>}</td>
                   <td>
                     <span className={`pill ${s.active ? "pill-ok" : "pill-off"}`}>{s.active ? "Aktif" : "Pasif"}</span>
                   </td>
-                  <td style={{ display: "flex", gap: 8 }}>
+                  <td style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "flex-start" }}>
+                    <SetPinForm id={s.id} name={s.name} />
                     <ResetPinButton id={s.id} />
                     <form action={toggleStaffActive}>
                       <input type="hidden" name="id" value={s.id} />

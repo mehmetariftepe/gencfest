@@ -39,6 +39,27 @@ describe("kayıt", () => {
     expect(await registerTicket(db, { ...person(), phone: p.phone })).toEqual({ ok: false, error: "duplicate_phone" });
   });
 
+  it("e-posta ve telefon aynı kayda aitse yeni bilet açmadan mevcut bileti döndürür", async () => {
+    const p = person();
+    const first = await registerTicket(db, p);
+    if (!first.ok) throw new Error("kayıt başarısız");
+    await db.update(settings).set({ registrationOpen: false });
+    expect(await registerTicket(db, { ...p, fullName: "Başka Ad" })).toEqual({
+      ok: true,
+      ticketId: first.ticketId,
+      existing: true,
+    });
+    expect(await db.select().from(tickets)).toHaveLength(1);
+  });
+
+  it("e-posta bir kayda, telefon başka bir kayda aitse bilet göstermez", async () => {
+    const a = person();
+    const b = person();
+    await registerTicket(db, a);
+    await registerTicket(db, b);
+    expect((await registerTicket(db, { ...person(), email: a.email, phone: b.phone })).ok).toBe(false);
+  });
+
   it("kontenjan dolunca reddeder", async () => {
     await getRegistrationState(db);
     await db.update(settings).set({ capacity: 2 });

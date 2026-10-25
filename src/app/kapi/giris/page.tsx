@@ -2,6 +2,7 @@ import { asc, eq } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { StaffLoginForm } from "@/components/LoginForms";
+import { Logo } from "@/components/SiteChrome";
 import { getDb } from "@/lib/db";
 import { staff } from "@/lib/db/schema";
 
@@ -16,12 +17,12 @@ export default async function StaffLoginPage() {
     .orderBy(asc(staff.name));
 
   return (
-    <div className="stage auth">
-      <div className="stage-fog" />
-      <div className="card card-glow">
-        <p className="brand" style={{ margin: "0 0 18px" }}>
+    <div className="auth">
+      <div className="card">
+        <Link href="/" className="auth-brand brand">
+          <Logo size={44} />
           Alucra <span>GençFest</span>
-        </p>
+        </Link>
         <h1>Görevli girişi</h1>
         <p className="muted" style={{ marginTop: 0 }}>
           Yöneticinin size verdiği 6 haneli PIN ile giriş yapın.

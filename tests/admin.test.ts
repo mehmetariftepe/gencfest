@@ -1,9 +1,9 @@
 import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
-import { anonymizeAll, getStats, listTickets, toCsv } from "@/lib/admin";
+import { deleteAllTickets, getStats, listTickets, recentCheckins, toCsv } from "@/lib/admin";
 import { checkIn } from "@/lib/checkin";
 import { createLocalDb, type Db } from "@/lib/db";
-import { tickets } from "@/lib/db/schema";
+import { checkinConflicts, tickets } from "@/lib/db/schema";
 import { registerTicket } from "@/lib/register";
 
 let db: Db;
@@ -41,12 +41,21 @@ describe("yönetim", () => {
     expect(await getStats(db)).toMatchObject({ active: 2, cancelled: 1, inside: 1, under18: 1, adult: 1, adultInside: 1, under18Inside: 0 });
   });
 
-  it("anonimleştirme kişisel veriyi siler, sayıları korur", async () => {
-    expect(await anonymizeAll(db)).toBe(3);
-    const rows = await db.select().from(tickets);
-    expect(rows.every((r) => r.fullName === "Silindi" && r.email.startsWith("silindi-") && r.phone.startsWith("silindi-"))).toBe(true);
-    expect(await getStats(db)).toMatchObject({ active: 2, inside: 1, under18: 1 });
-    expect(await anonymizeAll(db)).toBe(0);
+  it("KVKK silmesi tüm kayıtları siler; liste, son girişler ve özet sıfırlanır", async () => {
+    await db.insert(checkinConflicts).values({ ticketId: ids["Ayşe Yılmaz"], scannedAt: new Date() });
+    expect(await deleteAllTickets(db)).toBe(3);
+    expect(await db.select().from(tickets)).toEqual([]);
+    expect(await db.select().from(checkinConflicts)).toEqual([]);
+    expect(await listTickets(db, {})).toMatchObject({ rows: [], total: 0 });
+    expect(await recentCheckins(db)).toEqual([]);
+    expect(await getStats(db)).toMatchObject({ active: 0, cancelled: 0, inside: 0, under18: 0, adult: 0 });
+    expect(await deleteAllTickets(db)).toBe(0);
+  });
+
+  it("silmeden sonra aynı kişi yeniden kayıt olabilir", async () => {
+    await deleteAllTickets(db);
+    await add("Ayşe Yılmaz", "ayse@example.com", "+905321111111", "adult");
+    expect((await listTickets(db, {})).rows.map((r) => r.fullName)).toEqual(["Ayşe Yılmaz"]);
   });
 });
 

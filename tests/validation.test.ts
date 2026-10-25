@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizePhone, registrationSchema } from "@/lib/validation";
+import { normalizePhone, pinProblem, registrationSchema } from "@/lib/validation";
 
 const valid = {
   fullName: "  Ayşe   Yılmaz ",
@@ -39,5 +39,20 @@ describe("kayıt doğrulama", () => {
   it("geçersiz e-posta ve yaş grubunu reddeder", () => {
     expect(registrationSchema.safeParse({ ...valid, email: "ayse@" }).success).toBe(false);
     expect(registrationSchema.safeParse({ ...valid, ageGroup: "" }).success).toBe(false);
+  });
+});
+
+describe("görevli PIN'i", () => {
+  it("6 haneli, tahmini zor PIN'i kabul eder", () => {
+    expect(pinProblem("482915")).toBeNull();
+    expect(pinProblem("010203")).toBeNull();
+  });
+
+  it("biçimi bozuk PIN'i reddeder", () => {
+    for (const p of ["12345", "1234567", "12a456", " 48291", ""]) expect(pinProblem(p)).toMatch(/6 rakam/);
+  });
+
+  it("aynı rakamlardan veya sıralı rakamlardan oluşan PIN'i reddeder", () => {
+    for (const p of ["000000", "777777", "123456", "654321", "345678"]) expect(pinProblem(p)).toMatch(/tahmin/);
   });
 });

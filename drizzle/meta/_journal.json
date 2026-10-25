@@ -8,6 +8,13 @@
       "when": 1792853931933,
       "tag": "0000_boring_zeigeist",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792952356144,
+      "tag": "0001_vengeful_shard",
+      "breakpoints": true
     }
   ]
 }

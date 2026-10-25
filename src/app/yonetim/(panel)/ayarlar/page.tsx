@@ -23,8 +23,8 @@ export default async function SettingsPage() {
           <h2>KVKK: Kişisel verileri sil</h2>
           <p className="muted">
             Etkinlikten sonra en geç {EVENT.retentionDays} gün içinde yapılmalıdır. Tüm katılımcıların ad, e-posta ve
-            telefon bilgileri <strong>geri döndürülemez</strong> biçimde silinir; toplam kayıt, giriş ve yaş grubu
-            sayıları korunur. Gerekiyorsa önce Katılımcılar sayfasından CSV yedeği alın.
+            telefon bilgileri ve kayıtları <strong>geri döndürülemez</strong> biçimde silinir; katılımcı listesi ve Özet
+            sayfasındaki sayılar sıfırlanır. Görevliler ve ayarlar korunur. Gerekiyorsa önce Katılımcılar sayfasından CSV yedeği alın.
           </p>
           <AnonymizeForm />
         </section>

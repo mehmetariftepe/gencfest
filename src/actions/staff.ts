@@ -7,8 +7,10 @@ import { randomInt } from "node:crypto";
 import { requireAdmin } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { staff } from "@/lib/db/schema";
+import { pinProblem } from "@/lib/validation";
 
 export type StaffFormState = { error?: string; created?: { name: string; pin: string } };
+export type SetPinState = { error?: string; saved?: boolean };
 
 const newPin = () => String(randomInt(0, 1_000_000)).padStart(6, "0");
 
@@ -18,7 +20,7 @@ export async function createStaff(_prev: StaffFormState, fd: FormData): Promise<
   if (name.length < 2 || name.length > 40) return { error: "İsim 2–40 karakter olmalı." };
 
   const pin = newPin();
-  await (await getDb()).insert(staff).values({ name, pinHash: await bcrypt.hash(pin, 10) });
+  await (await getDb()).insert(staff).values({ name, pin, pinHash: await bcrypt.hash(pin, 10) });
   revalidatePath("/yonetim/gorevliler");
   return { created: { name, pin } };
 }
@@ -29,11 +31,28 @@ export async function resetStaffPin(_prev: StaffFormState, fd: FormData): Promis
   const pin = newPin();
   const [s] = await (await getDb())
     .update(staff)
-    .set({ pinHash: await bcrypt.hash(pin, 10) })
+    .set({ pin, pinHash: await bcrypt.hash(pin, 10) })
     .where(eq(staff.id, id))
     .returning({ name: staff.name });
   if (!s) return { error: "Görevli bulunamadı." };
+  revalidatePath("/yonetim/gorevliler");
   return { created: { name: s.name, pin } };
+}
+
+/** Yöneticinin elle belirlediği PIN'i kaydeder. */
+export async function setStaffPin(_prev: SetPinState, fd: FormData): Promise<SetPinState> {
+  await requireAdmin();
+  const pin = String(fd.get("pin") ?? "").trim();
+  const problem = pinProblem(pin);
+  if (problem) return { error: problem };
+  const [s] = await (await getDb())
+    .update(staff)
+    .set({ pin, pinHash: await bcrypt.hash(pin, 10) })
+    .where(eq(staff.id, String(fd.get("id") ?? "")))
+    .returning({ id: staff.id });
+  if (!s) return { error: "Görevli bulunamadı." };
+  revalidatePath("/yonetim/gorevliler");
+  return { saved: true };
 }
 
 export async function toggleStaffActive(fd: FormData) {

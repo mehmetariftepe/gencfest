@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AdminLoginForm } from "@/components/LoginForms";
+import { Logo } from "@/components/SiteChrome";
 
 export const metadata: Metadata = { title: "Yönetici girişi · GençFest", robots: { index: false } };
 
 export default function AdminLoginPage() {
   return (
-    <div className="stage auth">
-      <div className="stage-fog" />
-      <div className="card card-glow">
-        <p className="brand" style={{ margin: "0 0 18px" }}>
+    <div className="auth">
+      <div className="card">
+        <Link href="/" className="auth-brand brand">
+          <Logo size={44} />
           Alucra <span>GençFest</span>
-        </p>
+        </Link>
         <h1>Yönetim paneli</h1>
         <p className="muted" style={{ marginTop: 0 }}>
           Devam etmek için yönetici şifresini girin.

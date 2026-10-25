@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { logout } from "@/actions/auth";
+import { Logo } from "@/components/SiteChrome";
 import { requireAdmin } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Yönetim · GençFest", robots: { index: false } };
@@ -13,7 +14,8 @@ export default async function PanelLayout({ children }: { children: React.ReactN
       <header className="admin-bar">
         <div className="container">
           <Link href="/yonetim" className="brand">
-            Gençfest <span>Panel</span>
+            <Logo size={40} />
+            GençFest <span>Panel</span>
           </Link>
           <nav className="admin-nav">
             <Link href="/yonetim">Özet</Link>

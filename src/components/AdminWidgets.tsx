@@ -70,7 +70,7 @@ export function AnonymizeForm() {
           <input name="confirm" autoComplete="off" />
         </label>
         <button className="btn btn-danger" disabled={pending}>
-          Kişisel verileri kalıcı olarak sil
+          Tüm katılımcı verilerini kalıcı olarak sil
         </button>
       </div>
     </form>

@@ -15,6 +15,8 @@ export const staff = pgTable("staff", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
   pinHash: text("pin_hash").notNull(),
+  // Yönetici panelde görebilsin diye açık PIN; giriş doğrulaması yine pin_hash ile yapılır. Eski kayıtlarda boş.
+  pin: text("pin"),
   active: boolean("active").notNull().default(true),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });

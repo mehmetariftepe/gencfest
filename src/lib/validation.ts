@@ -45,3 +45,14 @@ export function registrationFromForm(fd: FormData) {
     guardianConsent: fd.get("guardianConsent") === "on",
   };
 }
+
+/** Elle girilen görevli PIN'i için hata metni; sorun yoksa null. Tahmini kolay PIN'ler reddedilir. */
+export function pinProblem(pin: string): string | null {
+  if (!/^\d{6}$/.test(pin)) return "PIN tam 6 rakam olmalı.";
+  const d = [...pin].map(Number);
+  const allSame = d.every((x) => x === d[0]);
+  const steps = d.slice(1).map((x, i) => x - d[i]);
+  const sequential = steps.every((s) => s === 1) || steps.every((s) => s === -1);
+  if (allSame || sequential) return "Bu PIN tahmin edilmesi kolay, başka bir PIN seçin.";
+  return null;
+}
